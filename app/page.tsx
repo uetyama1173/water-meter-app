@@ -8,8 +8,6 @@ export default function WaterUsageForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("組合員名:", memberName);
-    console.log("水道使用量:", waterUsage);
 
     // ✅ データを保存（localStorageに追加）
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
