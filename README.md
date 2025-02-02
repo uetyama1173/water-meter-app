@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💧 水道料金計算アプリ
 
-## Getting Started
+水道使用量に基づいて料金を計算し、リストとして表示するシンプルなWebアプリです。  
+使用量に応じた料金計算のロジックが組み込まれていると共に、データは `localStorage` を利用して一時的に保存されます。
 
-First, run the development server:
+---
+## 機能一覧
+- 水道使用量を入力し、料金を自動計算
+- 使用者ごとの料金リストを表示
+- 合計金額を計算して表示
+- データは一時的に `localStorage` に保存
+- トップページへの戻るボタン
+- Next.js の `useEffect` フックを使用してデータを管理
 
+---
+## 使用技術
+- **フロントエンド:** Next.js 15 (React)
+- **CSSフレームワーク:** Tailwind CSS
+- **データ管理:** `useState` & `localStorage`
+- **ルーティング:** `useRouter` (Next.js)
+
+---
+## セットアップ手順
 ```bash
+# 1. リポジトリをクローン
+git clone https://github.com/your-username/water-usage-app.git
+
+# 2. ディレクトリに移動
+cd water-usage-app
+
+# 3. 依存関係をインストール
+npm install
+
+# 4. アプリを起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+ブラウザで `http://localhost:3000` を開く。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
+## 計算ロジック
+水道使用量に応じて、以下のルールで料金が決定されます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| 使用量 (m³) | 料金の計算ルール |
+|------------|----------------|
+| **1～20m³** | 各 m³ **800円** |
+| **21～40m³** | 各 m³ **800 + 45 × (m³ - 20)円** |
+| **41m³ 以上** | 各 m³ **800 + 45 × 20 + 40 × (m³ - 40)円** |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
+## 今後の改善点
+- [ ] PDFへ出力し、集金袋に貼り付ける画面を構築する
+- [ ] レスポンシブ対応
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
