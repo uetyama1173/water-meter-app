@@ -8,15 +8,15 @@ export default function WaterUsageResults() {
   const router = useRouter();
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
+    const storedData = JSON.parse(localStorage.getItem("waterData") || "[]"); // 使用量を取得している
 
     if (storedData.length > 0) {
-      // ✅ 料金を計算してデータに追加
+
       const updatedData = storedData.map((data: { memberName: string; waterUsage: string }) => {
-        const usage = Number(data.waterUsage);
+        const usage = Number(data.waterUsage); // 数値に変換
         return {
           ...data,
-          totalPrice: calculateTotalPrice(usage),
+          totalPrice: calculateTotalPrice(usage), // オブジェクト更新
         };
       });
 
