@@ -51,3 +51,7 @@ npm run dev
 - [ ] PDFへ出力し、集金袋に貼り付ける画面を構築する
 - [ ] レスポンシブ対応
 
+---
+## Live demo
+
+[デモサイト](https://water-meter-app-fawn.vercel.app/)
