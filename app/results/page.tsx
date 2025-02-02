@@ -5,17 +5,41 @@ import { useRouter } from "next/navigation";
 export default function WaterUsageResults() {
   const [waterData, setWaterData] = useState<{ memberName: string; waterUsage: string; totalPrice: number }[]>([]);
   const router = useRouter();
-  const pricePerM3 = 800; // ✅ 1m³ = 800円
+
+  // 使用量に応じた料金を計算する関数
+  const calculateTotalPrice = (usage: number): number => {
+
+    let total = 0;
+
+    // 1m³ごとに料金を足し合わせる
+    for (let i = 1; i <= usage; i++) {
+      if (i <= 20) {
+        // 1～20m³：各800円
+        total += 800;
+      } else if (i <= 40) {
+        // 21～40m³：各 m³ の料金は 800 + 45×(i-20)
+        total += 800 + 45 * (i - 20);
+      } else {
+        // 41m³以降：各 m³ の料金は 800 + 45×20 + 40×(i-40)
+        total += 800 + 45 * 20 + 40 * (i - 40);
+      }
+    }
+
+    return total
+  }
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
 
     if (storedData.length > 0) {
       // ✅ 料金を計算してデータに追加
-      const updatedData = storedData.map((data: { memberName: string; waterUsage: string }) => ({
-        ...data,
-        totalPrice: Number(data.waterUsage) * pricePerM3, // 料金計算
-      }));
+      const updatedData = storedData.map((data: { memberName: string; waterUsage: string }) => {
+        const usage = Number(data.waterUsage);
+        return {
+          ...data,
+          totalPrice: calculateTotalPrice(usage),
+        };
+      });
 
       setWaterData(updatedData);
       setTimeout(() => {
