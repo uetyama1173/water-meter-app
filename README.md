@@ -18,6 +18,7 @@
 - **CSSフレームワーク:** Tailwind CSS
 - **データ管理:** `useState` & `localStorage`
 - **ルーティング:** `useRouter` (Next.js)
+- **ホスティング/デプロイ:** Vercel
 
 ---
 ## セットアップ手順
