@@ -1,62 +1,68 @@
 "use client";
-import { useState } from "react";
-import { redirect } from "next/navigation"; 
+import { redirect } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { validateForm } from "./utils/validationRules";
 
+// フォームで扱うデータの型を定義
+type FormValues = {
+  memberName: string;
+  waterUsage: string;
+};
+
 export default function WaterUsageForm() {
-  const [memberName, setMemberName] = useState("");
-  const [waterUsage, setWaterUsage] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // バリデーション
-    const newErrors = { memberName: "", waterUsage: "" }; // メモ：　再定義する必要ある？
-    validateForm(newErrors.memberName, newErrors.waterUsage);
-
-    // // 組合員名の確認
-    // if (memberName.trim() === "" || memberName.trim().length > 8){
-    //   newErrors.memberName = "組合員名は8文字以下で入力してください"
-    //   formIsValid = false;
-    // }
-
-    // // 水道使用量のチェック（0 より大きいかどうか）
-    // const usageNumber = Number(waterUsage);
-    // if (waterUsage === "" || isNaN(usageNumber) || usageNumber <= 0) {
-    //   newErrors.waterUsage = "正しい水道使用量を入力してください";
-    //   formIsValid = false;
-    // }
-
-    // if (!formIsValid) {
-    //   // setErrors(newErrors);
-    //   return;
-    // }
+  // useForm フックでフォーム管理に必要な関数・状態を取得
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<FormValues>();
 
 
-    // データを保存（localStorageに追加）
+  const onSubmit = (data: FormValues) => {
+    
+    // 入力規則
+    const isValid = validateForm(data.memberName, data.waterUsage);
+
+    if (!isValid) {
+      // 例：memberName と waterUsage に手動でエラーを設定
+      setError("memberName", {
+        type: "manual",
+        message: "組合員名にエラーがあります"
+      });
+      setError("waterUsage", {
+        type: "manual",
+        message: "水道使用量にエラーがあります"
+      });
+      return;
+    }
+
+    // localStorage にデータを保存する例
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
-    const newData = [...storedData, { memberName, waterUsage }];
+    const newData = [...storedData, data];
     localStorage.setItem("waterData", JSON.stringify(newData));
 
-    // ページ遷移（ここではリセットしない）
+    // ページ遷移（ここでは redirect を使用）
     redirect("/results");
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-xl font-bold mb-4">水道使用量入力フォーム</h2>
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         {/* 組合員名 */}
         <div>
           <label className="block text-gray-700">組合員名:</label>
           <input
             type="text"
-            value={memberName}
-            onChange={(e) => setMemberName(e.target.value)}
+            // register 関数を用いて "memberName" フィールドを登録。必須チェックのルールを指定
+            {...register("memberName", { required: "組合員名は必須です" })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="組合員名を入力"
-            // required
           />
+          {errors.memberName && (
+            <p className="text-red-500">{errors.memberName.message}</p>
+          )}
         </div>
 
         {/* 水道使用量 */}
@@ -64,12 +70,13 @@ export default function WaterUsageForm() {
           <label className="block text-gray-700">水道使用量 (m³):</label>
           <input
             type="number"
-            value={waterUsage}
-            onChange={(e) => setWaterUsage(e.target.value)}
+            {...register("waterUsage", { required: "使用量は必須です" })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="使用量を入力"
-            // required
           />
+          {errors.waterUsage && (
+            <p className="text-red-500">{errors.waterUsage.message}</p>
+          )}
         </div>
 
         {/* 送信ボタン */}
