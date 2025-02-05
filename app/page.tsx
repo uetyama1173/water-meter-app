@@ -2,12 +2,8 @@
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { validateForm } from "./utils/validationRules";
+import { FormType } from "./types/types"
 
-// フォームで扱うデータの型を定義
-type FormValues = {
-  memberName: string;
-  waterUsage: string;
-};
 
 export default function WaterUsageForm() {
   // useForm フックでフォーム管理に必要な関数・状態を取得
@@ -16,10 +12,10 @@ export default function WaterUsageForm() {
     handleSubmit,
     setError,
     formState: { errors }
-  } = useForm<FormValues>();
+  } = useForm<FormType>();
 
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: FormType) => {
     
     // 入力規則
     const isValid = validateForm(data.memberName, data.waterUsage);
