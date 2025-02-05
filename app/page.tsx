@@ -1,38 +1,64 @@
 "use client";
-import { useState } from "react";
-import { redirect } from "next/navigation"; // ✅ `redirect()` を使う！
+import { redirect } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { validateForm } from "./utils/validationRules";
+import { FormType } from "./types/types"
+
 
 export default function WaterUsageForm() {
-  const [memberName, setMemberName] = useState("");
-  const [waterUsage, setWaterUsage] = useState("");
+  // useForm フックでフォーム管理に必要な関数・状態を取得
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<FormType>();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
 
-    // ✅ データを保存（localStorageに追加）
+  const onSubmit = (data: FormType) => {
+    
+    // 入力規則
+    const isValid = validateForm(data.memberName, data.waterUsage);
+
+    if (!isValid) {
+      // 例：memberName と waterUsage に手動でエラーを設定
+      setError("memberName", {
+        type: "manual",
+        message: "組合員名にエラーがあります"
+      });
+      setError("waterUsage", {
+        type: "manual",
+        message: "水道使用量にエラーがあります"
+      });
+      return;
+    }
+
+    // localStorage にデータを保存する例
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
-    const newData = [...storedData, { memberName, waterUsage }];
+    const newData = [...storedData, data];
     localStorage.setItem("waterData", JSON.stringify(newData));
 
-    // ✅ ページ遷移（ここではリセットしない）
+    // ページ遷移（ここでは redirect を使用）
     redirect("/results");
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-xl font-bold mb-4">水道使用量入力フォーム</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         {/* 組合員名 */}
         <div>
           <label className="block text-gray-700">組合員名:</label>
           <input
             type="text"
-            value={memberName}
-            onChange={(e) => setMemberName(e.target.value)}
+            // register 関数を用いて "memberName" フィールドを登録。必須チェックのルールを指定
+            {...register("memberName", { required: "組合員名は必須です" })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="組合員名を入力"
-            required
           />
+          {errors.memberName && (
+            <p className="text-red-500">{errors.memberName.message}</p>
+          )}
         </div>
 
         {/* 水道使用量 */}
@@ -40,12 +66,13 @@ export default function WaterUsageForm() {
           <label className="block text-gray-700">水道使用量 (m³):</label>
           <input
             type="number"
-            value={waterUsage}
-            onChange={(e) => setWaterUsage(e.target.value)}
+            {...register("waterUsage", { required: "使用量は必須です" })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="使用量を入力"
-            required
           />
+          {errors.waterUsage && (
+            <p className="text-red-500">{errors.waterUsage.message}</p>
+          )}
         </div>
 
         {/* 送信ボタン */}
