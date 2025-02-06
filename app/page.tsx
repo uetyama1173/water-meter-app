@@ -1,7 +1,6 @@
 "use client";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { validateForm } from "./utils/validationRules";
 import { FormType } from "./types/types"
 
 
@@ -10,32 +9,11 @@ export default function WaterUsageForm() {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors }
   } = useForm<FormType>();
 
 
   const onSubmit = (data: FormType) => {
-
-    // // 入力規則
-    // const isValid = validateForm(data.memberName, data.waterUsage);
-
-    // if (!isValid) {
-
-    //   // 例：memberName と waterUsage に手動でエラーを設定
-    //   setError("memberName", {
-    //     type: "manual",
-    //     message: "組合員名にエラーがあります"
-    //   });
-    //   setError("waterUsage", {
-    //     type: "manual",
-    //     message: "水道使用量にエラーがあります"
-    //   });
-    //   return;
-    // }
-    // console.log(errors)
-
-
     // localStorage にデータを保存する例
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
     const newData = [...storedData, data];
