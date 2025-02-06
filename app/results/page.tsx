@@ -45,7 +45,7 @@ export default function WaterUsageResults() {
               <tr className="bg-gray-200">
                 <th className="border p-2">組合員名</th>
                 <th className="border p-2">水道使用量 (m³)</th>
-                <th className="border p-2">料金 (円)</th> 
+                <th className="border p-2">年間料金 (円)</th> 
               </tr>
             </thead>
             <tbody>
