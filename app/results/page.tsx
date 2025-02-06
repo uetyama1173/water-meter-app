@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { calculateTotalPrice } from "../utils/calc"
 
 export default function WaterUsageResults() {
-  const [waterData, setWaterData] = useState<{ memberName: string; waterUsage: string; totalPrice: number }[]>([]);
+  const [waterData, setWaterData] = useState<{
+    memberName: string; waterUsage: string; usageMonthly: number; PriceMonthly: number;
+    total: number;
+  }[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -14,9 +17,12 @@ export default function WaterUsageResults() {
 
       const updatedData = storedData.map((data: { memberName: string; waterUsage: string }) => {
         const usage = Number(data.waterUsage); // 数値に変換
+        const { usageMonthly, PriceMonthly, total } = calculateTotalPrice(usage);
         return {
           ...data,
-          totalPrice: calculateTotalPrice(usage), // オブジェクト更新
+          usageMonthly,  // 月平均使用量
+          PriceMonthly,  // 1か月当たりの料金
+          total,   // 年間料金
         };
       });
 
@@ -29,9 +35,6 @@ export default function WaterUsageResults() {
     }
   }, []);
 
-  // ✅ 合計金額を計算
-  const totalAmount = waterData.reduce((sum, data) => sum + data.totalPrice, 0);
-
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-xl font-bold mb-4">水道使用量 & 料金一覧</h2>
@@ -40,29 +43,35 @@ export default function WaterUsageResults() {
         <p className="text-gray-500">データがありません。</p>
       ) : (
         <>
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2">組合員名</th>
-                <th className="border p-2">水道使用量 (m³)</th>
-                <th className="border p-2">年間料金 (円)</th> 
-              </tr>
-            </thead>
-            <tbody>
-              {waterData.map((data, index) => (
-                <tr key={index}>
-                  <td className="border p-2">{data.memberName}</td>
-                  <td className="border p-2">{data.waterUsage} m³</td>
-                  <td className="border p-2">{data.totalPrice.toLocaleString()} 円</td>
+          {waterData.map((data, index) => (
+            <table
+              key={index}
+              className="w-full border-collapse border border-gray-300 mb-4"
+            >
+              <tbody>
+                <tr>
+                  <th className="border p-2 text-left">組合員名</th>
+                  <td className="border p-2 font-bold">{data.memberName}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* ✅ 合計金額を表示 */}
-          <div className="mt-4 text-right font-bold text-lg">
-            合計金額: {totalAmount.toLocaleString()} 円
-          </div>
+                <tr>
+                  <th className="border p-2 text-left">年間使用量 (m³)</th>
+                  <td className="border p-2">{data.waterUsage} m³</td>
+                </tr>
+                <tr>
+                  <th className="border p-2 text-left">月平均使用量 (m³)</th>
+                  <td className="border p-2">{data.usageMonthly} m³</td>
+                </tr>
+                <tr>
+                  <th className="border p-2 text-left">１か月当りの水道料金 (円)</th>
+                  <td className="border p-2">{data.PriceMonthly} 円</td>
+                </tr>
+                <tr>
+                  <th className="border p-2 text-left">年間料金 (円)</th>
+                  <td className="border p-2">{data.total} 円</td>
+                </tr>
+              </tbody>
+            </table>
+          ))}
         </>
       )}
 
