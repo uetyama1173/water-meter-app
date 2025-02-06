@@ -16,22 +16,25 @@ export default function WaterUsageForm() {
 
 
   const onSubmit = (data: FormType) => {
-    
-    // 入力規則
-    const isValid = validateForm(data.memberName, data.waterUsage);
 
-    if (!isValid) {
-      // 例：memberName と waterUsage に手動でエラーを設定
-      setError("memberName", {
-        type: "manual",
-        message: "組合員名にエラーがあります"
-      });
-      setError("waterUsage", {
-        type: "manual",
-        message: "水道使用量にエラーがあります"
-      });
-      return;
-    }
+    // // 入力規則
+    // const isValid = validateForm(data.memberName, data.waterUsage);
+
+    // if (!isValid) {
+
+    //   // 例：memberName と waterUsage に手動でエラーを設定
+    //   setError("memberName", {
+    //     type: "manual",
+    //     message: "組合員名にエラーがあります"
+    //   });
+    //   setError("waterUsage", {
+    //     type: "manual",
+    //     message: "水道使用量にエラーがあります"
+    //   });
+    //   return;
+    // }
+    // console.log(errors)
+
 
     // localStorage にデータを保存する例
     const storedData = JSON.parse(localStorage.getItem("waterData") || "[]");
@@ -52,7 +55,11 @@ export default function WaterUsageForm() {
           <input
             type="text"
             // register 関数を用いて "memberName" フィールドを登録。必須チェックのルールを指定
-            {...register("memberName", { required: "組合員名は必須です" })}
+            {...register("memberName", {
+              required: "組合員名は必須です",
+              minLength: { value: 2, message: "2文字以上で入力してください" },
+              maxLength: { value: 8, message: "8文字以内で入力してください" },
+            })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="組合員名を入力"
           />
@@ -66,7 +73,10 @@ export default function WaterUsageForm() {
           <label className="block text-gray-700">水道使用量 (m³):</label>
           <input
             type="number"
-            {...register("waterUsage", { required: "使用量は必須です" })}
+            {...register("waterUsage", {
+              required: "使用量は必須です",
+              min: { value: 0, message: "0以上の値を入力してください" },
+            })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="使用量を入力"
           />
