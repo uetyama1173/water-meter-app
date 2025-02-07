@@ -48,7 +48,7 @@ export default function WaterUsageForm() {
 
         {/* 水道使用量 */}
         <div>
-          <label className="block text-gray-700">水道使用量 (m³):</label>
+          <label className="block text-gray-700">年間の水道使用量 (m³):</label>
           <input
             type="number"
             {...register("waterUsage", {

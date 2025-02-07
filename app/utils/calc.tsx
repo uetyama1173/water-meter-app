@@ -1,10 +1,4 @@
-// 複数の値を持つオブジェクト型を定義
-type PriceDetails = {
-  usageMonthly: number;
-  PriceMonthly: number;
-  total: number;
-};
-
+import { PriceDetails } from "../types/types"
 
 export const calculateTotalPrice = (usage: number): PriceDetails => {
 
