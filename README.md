@@ -10,14 +10,14 @@
 - 合計金額を計算して表示
 - データは一時的に `localStorage` に保存
 - トップページへの戻るボタン
-- Next.js の `useEffect` フックを使用してデータを管理
+- Next.js の `ReactHookForm` を使用してデータを管理
 
 ---
 ## 使用技術
 - **フロントエンド:** Next.js 15 (React)
 - **CSSフレームワーク:** Tailwind CSS
-- **データ管理:** `useState` & `localStorage`
-- **ルーティング:** `useRouter` (Next.js)
+- **データ管理:** `localStorage` & `ReactHookForm`
+- **ルーティング:** `useRouter` & `redirect` (Next.js), 
 - **ホスティング/デプロイ:** Vercel
 
 ---
